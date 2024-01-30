@@ -10,6 +10,8 @@ import article3Img from "./assets/images/article3.png"
 import { Counter } from "./components/Counter/Counter";
 // import { Counter } from "./components/Counter/Counter";
 
+//Utitlizando outra conta no github
+
 class App extends React.Component {
   render() {
     return (
