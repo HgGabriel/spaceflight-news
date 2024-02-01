@@ -1,38 +1,64 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { ThreeDots } from "react-loader-spinner";
 
 import "./styles/App.css";
 import { Navbar } from "./components/Navbar/Navbar";
 import { Article } from "./components/Article/Article";
-
-import article1Img from "./assets/images/article1.png"
-import article2Img from "./assets/images/article2.png"
-import article3Img from "./assets/images/article3.png"
-import { Counter } from "./components/Counter/Counter";
 // import { Counter } from "./components/Counter/Counter";
 
 //Utitlizando outra conta no github
 
-class App extends React.Component {
-  render() {
-    return (
-      <>
-        {/* <Navbar /> */}
+function App() {
+  const [news, setNews] = useState([]);
 
-        <Counter />
+  useEffect(() => {
+    async function loadNews() {
+      const response = await axios.get(
+        "https://api.spaceflightnewsapi.net/v3/articles"
+      );
+      const newsData = response.data;
 
-        {/* <section id="articles">
-          <Article title="Designing Dashboards" provider="NASA" description="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet." thumbnail={article1Img}/>
+      console.log(newsData);
+      setNews(newsData);
+    }
+    loadNews();
+  }, []);
 
-          <Article title="Vibrant Portraits of 2020" provider="SpaceNews" description="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet." thumbnail={article2Img} />
+  return (
+    <>
+      <Navbar />
 
-          <Article title="36 Days of Malayalam type" provider="Spaceflight Now" description="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet." thumbnail={article3Img} />
+      {/* <Counter /> */}
 
-          <Article title="Designing Dashboards" provider="NASA" description="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet." thumbnail={article1Img} />
-
-        </section> */}
-      </>
-    );
-  }
+      <section id="articles">
+        {news.length === 0 ? (
+          
+          <div style={{ height: '400x', width: '100%', display:'flex', justifyContent:'center', alignItems:'center'}}>
+          <ThreeDots
+            height="100"
+            width="100"
+            color="grey"
+            ariaLabel="loading"
+          />
+          </div>
+        ) : (
+          news.map((article) => {
+            return (
+              <Article
+                key={article.id}
+                url={article.url}
+                title={article.title}
+                provider={article.newsSite}
+                description={article.summary}
+                thumbnail={article.imageUrl}
+              />
+            );
+          })
+        )}
+      </section>
+    </>
+  );
 }
 
 export default App;
